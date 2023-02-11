@@ -106,7 +106,7 @@ int main(void) {
 
     // initialize stdio and wait for USB CDC connect
     stdio_init_all();
-    sleep_ms(1000); // could remove this after debugging, or keep it in
+    sleep_ms(3000); // could remove this after debugging, or keep it in
 
     // print welcome message on the USB UART or Serial UART (selected in CMakelists.txt)
     print_title();
@@ -184,7 +184,7 @@ int main(void) {
     if (res<0) {
         printf("config1.txt file not found, creating..\n");
         lfs_file_open(&lfs, &file, "config1.txt", LFS_O_RDWR | LFS_O_CREAT);
-        lfs_file_write(&lfs, &file, "IPADDR=192.168.0.10\n", 20);
+        lfs_file_write(&lfs, &file, "IPADDR=192.168.0.10\n\0", 21);
         lfs_file_close(&lfs, &file);
     } else {
         printf("config1.txt file found, reading..\n");
