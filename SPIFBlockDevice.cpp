@@ -634,7 +634,17 @@ spif_bd_error SPIFBlockDevice::_spi_send_general_command(int instruction, bd_add
     } else {
         slen = rx_length;
     }
-    spi_write_read_blocking(SPORT, (const uint8_t*)tx_buffer, (uint8_t*)rx_buffer, slen);
+    if ((tx_length > 0 ) && (rx_length > 0)) {
+        // this doesn't happen. And it will write junk if the tx_length is shorter than rx_length, so print an
+        // error for now, so that it can be corrected if needed in the future.
+        tr_error("ERROR: _spi_send_general_command: tx_length > 0 and rx_length > 0. This is not supported.\r");
+        spi_write_read_blocking(SPORT, (const uint8_t*)tx_buffer, (uint8_t*)rx_buffer, slen);
+    } else if (tx_length > 0) {
+        spi_write_blocking(SPORT, (uint8_t *)tx_buffer, tx_length);
+    } else if (rx_length > 0) {
+        spi_read_blocking(SPORT, 0, (uint8_t*)rx_buffer, rx_length);
+    }
+
 
     // csel back to high
     gpio_put(m_spi_pin_cs, 1);
